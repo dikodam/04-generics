@@ -1,5 +1,8 @@
 package ohm.softa.a04;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 /**
@@ -35,8 +38,14 @@ public class SimpleListImpl<T> implements SimpleList<T> {
         size++;
     }
     
-    public void addDefault() {
-        // TODO ??
+    @SuppressWarnings("unchecked")
+    public void addDefault(Class<T> klass) {
+        try {
+            T newInstance = (T) klass.getConstructors()[0].newInstance();
+            this.add(newInstance);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**
@@ -61,6 +70,7 @@ public class SimpleListImpl<T> implements SimpleList<T> {
     /**
      * @inheritDoc
      */
+    @NotNull
     @Override
     public Iterator<T> iterator() {
         return new SimpleIterator();
