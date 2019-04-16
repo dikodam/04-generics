@@ -15,27 +15,39 @@ public interface SimpleList<T> extends Iterable<T> {
     
     T get(int index);
     
+    void addDefault(Class<T> klass);
+    
     /**
      * Get a new SimpleList instance with all items of this list which match the given filter
      *
      * @param filter SimpleFilter instance
      * @return new SimpleList instance
      */
+    @SuppressWarnings("unchecked")
     default SimpleList<T> filter(SimpleFilter<T> filter) {
-        SimpleList<T> result = new SimpleListImpl<>();
-        for (T o : this) {
-            if (filter.include(o)) {
-                result.add(o);
+        try {
+            SimpleList<T> result = this.getClass().newInstance();
+            for (T o : this) {
+                if (filter.include(o)) {
+                    result.add(o);
+                }
             }
+            return result;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
     
+    @SuppressWarnings("unchecked")
     default <R> SimpleList<R> map(Function<T, R> transform) {
-        SimpleList<R> result = new SimpleListImpl<>();
-        for (T item : this) {
-            result.add(transform.apply(item));
+        try {
+            SimpleList<R> result = this.getClass().newInstance();
+            for (T item : this) {
+                result.add(transform.apply(item));
+            }
+            return result;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
 }
