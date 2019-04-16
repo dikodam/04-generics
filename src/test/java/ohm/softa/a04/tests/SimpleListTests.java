@@ -1,5 +1,6 @@
 package ohm.softa.a04.tests;
 
+import ohm.softa.a04.CollectionsUtility;
 import ohm.softa.a04.SimpleFilter;
 import ohm.softa.a04.SimpleList;
 import ohm.softa.a04.SimpleListImpl;
@@ -88,11 +89,29 @@ public class SimpleListTests {
     
     @Test
     void map() {
+        
         SimpleList<Integer> result = testList.map(i -> i * 2);
         for (int i = 0; i < testList.size(); i++) {
             int expected = testList.get(i) * 2;
             int acutal = result.get(i);
             assertEquals(expected, acutal);
+        }
+    }
+    
+    @Test
+    void bubblesort() {
+        testList = new SimpleListImpl<>();
+        testList.add(3);
+        testList.add(2);
+        testList.add(1);
+        testList.add(5);
+        testList.add(4);
+        
+        SimpleList<Integer> sortedList = CollectionsUtility.bubblesort(testList, Integer::compareTo);
+        sortedList.forEach(System.out::println);
+        
+        for (int i = 0; i < testList.size(); i++) {
+            assertEquals(i + 1, (int) sortedList.get(i));
         }
     }
 }
